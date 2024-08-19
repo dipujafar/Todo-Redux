@@ -5,28 +5,37 @@ import { Input } from "../ui/input";
 import { FormEvent, useState } from "react";
 import { useAppDispatch } from "@/redux/hook";
 import { addTodos } from "@/redux/features/todoSlice";
+import { useAddTodoMutation } from "@/redux/api/api";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
 
 const TodoModal = () => {
     const [task, setTask] = useState("");
     const [description, setDescription] = useState("");
-    const dispatch = useAppDispatch();
+    const [priority, serPrority] = useState("");
+    console.log(priority)
+    // const dispatch = useAppDispatch();
+
+    const [addTodo, {data,isLoading, isError}] = useAddTodoMutation();
+
+
 
 
     const ramdomString = Math.random().toString(36).substring(2,7);
+
     
 
     const onSubmit = (e:FormEvent)=>{
         e.preventDefault();
 
         const taskDetails = {
-            id: ramdomString,
             title: task,
-            description
+            description,
+            priority: priority,
         }
 
-        console.log({task,description})
-        dispatch(addTodos(taskDetails));
-        console.log(ramdomString)
+        // dispatch(addTodos(taskDetails));
+        addTodo(taskDetails);
+       
     }
     return (
         <Dialog>
@@ -63,6 +72,26 @@ const TodoModal = () => {
               />
             </div>
           </div>
+
+          <div className="flex items-center justify-center gap-2">
+          <Label htmlFor="task" className="text-right">
+              Priotrites : 
+              </Label>
+          <Select onValueChange={(value)=> serPrority(value)}>
+      <SelectTrigger className="">
+        <SelectValue placeholder="Select Priorites" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectGroup>
+          <SelectLabel>priorites</SelectLabel>
+          <SelectItem value="high">High</SelectItem>
+          <SelectItem value="medium">Medium</SelectItem>
+          <SelectItem value="low">Low</SelectItem>
+        
+        </SelectGroup>
+      </SelectContent>
+    </Select>
+    </div>
          
           <div className="flex justify-end">
             <DialogClose>
